@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empanadas de la Casa | Sabor Tradicional y Artesanal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#D97706',
+                            primary: '#C2410C',
+                            dark: '#292524',
+                            cream: '#FEF3C7',
+                            soft: '#FFFBEB',
+                            whatsapp: '#25D366'
+                        }
+                    },
+                    fontFamily: {
+                        heading: ['Fraunces', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .food-badge {
+            box-shadow: 0 4px 14px 0 rgba(194, 65, 12, 0.25);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FEF3C7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D97706;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C2410C;
+        }
+    </style>
+</head>
+<body class="font-sans bg-brand-soft text-brand-dark flex flex-col min-h-screen selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- NAVBAR -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-md border-b border-amber-100 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 bg-gradient-to-tr from-amber-600 to-orange-500 rounded-full flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform">
+                    <i class="fa-solid font-bold text-xl fa-utensils"></i>
+                </div>
+                <div>
+                    <span class="font-heading font-extrabold text-2xl text-stone-900 block leading-none">Empanadas</span>
+                    <span class="text-xs font-semibold text-amber-600 uppercase tracking-widest block">DE LA CASA</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center gap-8 font-semibold text-stone-700">
+                <a href="#inicio" class="hover:text-amber-600 transition-colors">Inicio</a>
+                <a href="#menu" class="hover:text-amber-600 transition-colors">Nuestro Menú</a>
+                <a href="#nosotros" class="hover:text-amber-600 transition-colors">El Secreto</a>
+                <a href="#contacto" class="hover:text-amber-600 transition-colors">Ubicación</a>
+            </nav>
+
+            <!-- Action Buttons & Cart -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleCart()" class="relative p-3 bg-amber-100 text-amber-900 hover:bg-amber-200 rounded-full transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-amber-500" aria-label="Ver Carrito">
+                    <i class="fa-solid fa-cart-shopping text-lg"></i>
+                    <span id="cart-counter" class="absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">0</span>
+                </button>
+                <a href="#menu" class="hidden sm:inline-flex bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-5 py-2.5 rounded-full font-bold shadow-md hover:shadow-lg transition-all transform active:scale-95">
+                    ¡Pedir Ahora!
+                </a>
+                
+                <!-- Mobile menu toggle button -->
+                <button id="mobile-menu-btn" onclick="toggleMobileNav()" class="md:hidden p-2 text-stone-700 hover:text-amber-600 text-xl focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-nav" class="hidden md:hidden bg-white border-b border-amber-100 px-4 pt-2 pb-6 space-y-3">
+            <a href="#inicio" onclick="toggleMobileNav()" class="block py-2 text-stone-800 font-medium hover:text-amber-600">Inicio</a>
+            <a href="#menu" onclick="toggleMobileNav()" class="block py-2 text-stone-800 font-medium hover:text-amber-600">Nuestro Menú</a>
+            <a href="#nosotros" onclick="toggleMobileNav()" class="block py-2 text-stone-800 font-medium hover:text-amber-600">El Secreto</a>
+            <a href="#contacto" onclick="toggleMobileNav()" class="block py-2 text-stone-800 font-medium hover:text-amber-600">Ubicación y Horarios</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="inicio" class="pt-28 pb-16 lg:pt-36 lg:pb-24 relative overflow-hidden bg-gradient-to-b from-amber-100/60 via-brand-soft to-brand-soft">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Text Content -->
+                <div class="space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 bg-amber-200/80 border border-amber-300 text-amber-900 px-4 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+                        <i class="fa-solid fa-fire text-orange-600"></i>
+                        100% Artesanales & Masa Crocante
+                    </div>
+                    
+                    <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold text-stone-900 leading-tight">
+                        El auténtico sabor de la empanada <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-orange-600">hecha a mano.</span>
+                    </h1>
+                    
+                    <p class="text-stone-600 text-lg sm:text-xl max-w-xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                        Masa crocante doradita, rellenos abundantes y jugosos preparados diariamente con sazón casera. ¡Acompañadas del mejor ají criollo!
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="#menu" class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 text-center flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-utensils"></i> Explorar Menú
+                        </a>
+                        <button onclick="openWhatsAppDirect()" class="w-full sm:w-auto bg-white border-2 border-stone-300 hover:border-amber-600 text-stone-800 hover:text-amber-600 font-bold px-8 py-4 rounded-full shadow-sm hover:shadow-md transition-all text-center flex items-center justify-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-emerald-600 text-xl"></i> Pedir por WhatsApp
+                        </button>
+                    </div>
+
+                    <!-- Highlights Badge Grid -->
+                    <div class="pt-8 grid grid-cols-3 gap-4 border-t border-amber-200/60 max-w-lg mx-auto lg:mx-0 text-center">
+                        <div>
+                            <span class="block text-2xl font-bold font-heading text-stone-900">+10</span>
+                            <span class="text-xs text-stone-500 font-medium">Sabores Exclusivos</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl font-bold font-heading text-stone-900">100%</span>
+                            <span class="text-xs text-stone-500 font-medium">Frescas al Instante</span>
+                        </div>
+                        <div>
+                            <span class="block text-2xl font-bold font-heading text-stone-900">4.9 ★</span>
+                            <span class="text-xs text-stone-500 font-medium">Clientes Felices</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Graphic Showcase -->
+                <div class="relative flex justify-center items-center">
+                    <!-- Decorative Background Blob -->
+                    <div class="absolute w-72 h-72 sm:w-96 sm:h-96 bg-amber-300/40 rounded-full filter blur-3xl -z-10 animate-pulse"></div>
+                    
+                    <div class="relative w-full max-w-md bg-white p-4 rounded-3xl shadow-2xl border border-amber-100 transform rotate-1 hover:rotate-0 transition-transform duration-500">
+                        <img src="https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&q=80&w=800" 
+                             alt="Empanadas Artesanales Doradas" 
+                             class="w-full h-80 object-cover rounded-2xl shadow-inner"
+                             onerror="this.src='https://placehold.co/600x400/D97706/FFFFFF?text=Empanadas+Artesanales'">
+                        
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-5 -left-5 bg-stone-900 text-white p-4 rounded-2xl shadow-xl flex items-center gap-3 border border-stone-700">
+                            <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-stone-900 font-bold">
+                                <i class="fa-solid fa-pepper-hot"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-stone-400 font-medium">Incluye sin costo</p>
+                                <p class="text-sm font-bold text-amber-400">Ají Casero & Guacamole</p>
+                            </div>
+                        </div>
+
+                        <!-- Price Tag Badge -->
+                        <div class="absolute top-8 right-8 bg-amber-600 text-white px-4 py-2 rounded-full shadow-lg font-bold font-heading text-sm food-badge">
+                            ¡Recién Horneadas / Fritas!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- MENU SECTION -->
+    <section id="menu" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Title -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-amber-600 font-bold uppercase tracking-widest text-xs">Variedad para todos los gustos</span>
+                <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-stone-900 mt-2">Nuestro Menú Delicioso</h2>
+                <p class="text-stone-600 mt-3 text-lg">Selecciona tus empanadas favoritas, agrega tus bebidas y salsas y realiza tu pedido fácilmente.</p>
+            </div>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-12" id="category-filters">
+                <button onclick="filterCategory('todos')" class="filter-btn active bg-amber-600 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-sm">
+                    Todas
+                </button>
+                <button onclick="filterCategory('tradicional')" class="filter-btn bg-stone-100 text-stone-700 hover:bg-amber-100 px-5 py-2.5 rounded-full font-semibold text-sm transition-all">
+                    Tradicionales
+                </button>
+                <button onclick="filterCategory('especial')" class="filter-btn bg-stone-100 text-stone-700 hover:bg-amber-100 px-5 py-2.5 rounded-full font-semibold text-sm transition-all">
+                    Especiales de la Casa
+                </button>
+                <button onclick="filterCategory('dulce')" class="filter-btn bg-stone-100 text-stone-700 hover:bg-amber-100 px-5 py-2.5 rounded-full font-semibold text-sm transition-all">
+                    Dulces / Queso
+                </button>
+                <button onclick="filterCategory('bebidas')" class="filter-btn bg-stone-100 text-stone-700 hover:bg-amber-100 px-5 py-2.5 rounded-full font-semibold text-sm transition-all">
+                    Bebidas & Salsas
+                </button>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="menu-grid">
+                <!-- Menu items generated dynamically via Javascript -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- NUESTRO SECRETO / HISTORIA -->
+    <section id="nosotros" class="py-20 bg-amber-900 text-white relative overflow-hidden">
+        <!-- Pattern overlay background -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <div class="space-y-6">
+                    <span class="text-amber-400 font-semibold uppercase tracking-widest text-xs">Pasión por la tradición</span>
+                    <h2 class="font-heading text-3xl sm:text-4xl font-extrabold text-amber-50">El Secreto de Nuestra Malla Crocante</h2>
+                    <p class="text-amber-100 text-lg leading-relaxed">
+                        En <span class="text-amber-400 font-semibold">Empanadas de la Casa</span> no usamos recetas industriales. Preservamos la tradición familiar moliendo nuestro propio maíz seleccionado y sazonando cada carne y guiso durante horas con ingredientes 100% naturales.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-800 rounded-2xl flex items-center justify-center text-amber-400 shrink-0 text-xl border border-amber-700">
+                                <i class="fa-solid fa-wheat-awn"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-100">Maíz Seleccionado</h4>
+                                <p class="text-xs text-amber-200/80 mt-1">Sin conservantes, masa 100% natural cocinada día a día.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-800 rounded-2xl flex items-center justify-center text-amber-400 shrink-0 text-xl border border-amber-700">
+                                <i class="fa-solid fa-drumstick-bite"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-100">Rellenos Abundantes</h4>
+                                <p class="text-xs text-amber-200/80 mt-1">Carne desmechada jugosa, pechuga de pollo pura y sabrosa.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-800 rounded-2xl flex items-center justify-center text-amber-400 shrink-0 text-xl border border-amber-700">
+                                <i class="fa-solid fa-temperature-arrow-up"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-100">Fritura Limpia</h4>
+                                <p class="text-xs text-amber-200/80 mt-1">Aceite fresco siempre para lograr esa textura crujiente no grasosa.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-amber-800 rounded-2xl flex items-center justify-center text-amber-400 shrink-0 text-xl border border-amber-700">
+                                <i class="fa-solid fa-bowl-food"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-amber-100">Ají Secreto</h4>
+                                <p class="text-xs text-amber-200/80 mt-1">Nuestra receta especial de la abuela con el punto exacto de picante.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=500" 
+                             alt="Preparación artesanal" 
+                             class="rounded-3xl shadow-lg w-full h-64 object-cover border-2 border-amber-700/50"
+                             onerror="this.src='https://placehold.co/400x500/D97706/FFFFFF?text=Artesanal'">
+                        <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&q=80&w=500" 
+                             alt="Empanadas doraditas" 
+                             class="rounded-3xl shadow-lg w-full h-64 object-cover border-2 border-amber-700/50 mt-8"
+                             onerror="this.src='https://placehold.co/400x500/C2410C/FFFFFF?text=Recién+Hechas'">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- UBICACIÓN & CONTACTO -->
+    <section id="contacto" class="py-20 bg-brand-soft">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border border-amber-100 grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="space-y-4">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-stone-900">Visítanos en Nuestro Local</h3>
+                    <p class="text-stone-600 text-sm">Disfruta tus empanadas calientitas recién salidas de la paila en nuestro acogedor punto de venta.</p>
+                    <div class="pt-2">
+                        <p class="font-bold text-stone-900">Dirección:</p>
+                        <p class="text-stone-600 text-sm">Calle 45 # 18 - 24, Barrio Centro</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-stone-900">Horarios de Atención</h3>
+                    <p class="text-stone-600 text-sm">Servicio en punto de venta y domicilio en la ciudad.</p>
+                    <div class="pt-2 text-sm text-stone-600 space-y-1">
+                        <p><span class="font-semibold text-stone-900">Lunes a Viernes:</span> 4:00 PM - 10:00 PM</p>
+                        <p><span class="font-semibold text-stone-900">Sábados y Domingos:</span> 3:00 PM - 11:00 PM</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-2xl font-bold">
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                    <h3 class="font-heading text-2xl font-bold text-stone-900">Domicilios Rápidos</h3>
+                    <p class="text-stone-600 text-sm">¿Antojo en casa u oficina? Te las llevamos calientes y crujientes.</p>
+                    <div class="pt-2">
+                        <a href="https://wa.me/573001234567" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-2xl font-bold transition-all shadow-md">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> +57 300 123 4567
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CART SIDEBAR MODAL -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none transition-all duration-300">
+        <!-- Backdrop -->
+        <div id="cart-backdrop" onclick="toggleCart()" class="absolute inset-0 bg-stone-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div id="cart-content" class="w-screen max-w-md bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 bg-amber-50 border-b border-amber-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-bag-shopping text-2xl text-amber-600"></i>
+                        <h2 class="font-heading text-xl font-extrabold text-stone-900">Tu Pedido</h2>
+                    </div>
+                    <button onclick="toggleCart()" class="p-2 text-stone-400 hover:text-stone-700 transition-colors">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Drawer Items List -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-4" id="cart-items-container">
+                    <!-- Dynamic cart content will be injected here -->
+                </div>
+
+                <!-- Drawer Footer & Checkout Form -->
+                <div class="p-6 bg-stone-50 border-t border-stone-200 space-y-4">
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-stone-600 text-sm">
+                            <span>Subtotal</span>
+                            <span id="cart-subtotal" class="font-semibold text-stone-900">$0 COP</span>
+                        </div>
+                        <div class="flex justify-between text-stone-600 text-sm">
+                            <span>Domicilio estimado</span>
+                            <span class="font-semibold text-stone-900">$4.000 COP</span>
+                        </div>
+                        <div class="flex justify-between text-stone-900 font-extrabold text-lg border-t border-stone-200 pt-2">
+                            <span>Total</span>
+                            <span id="cart-total" class="text-amber-700">$0 COP</span>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Details Form -->
+                    <form id="order-form" onsubmit="sendWhatsAppOrder(event)" class="space-y-3 pt-2">
+                        <div>
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Nombre Completo</label>
+                            <input type="text" id="customer-name" required placeholder="Ej: María Rodríguez" class="w-full text-sm px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Dirección de Entrega</label>
+                            <input type="text" id="customer-address" required placeholder="Ej: Calle 12 #34-56 Apto 201" class="w-full text-sm px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Método de Pago</label>
+                            <select id="payment-method" class="w-full text-sm px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
+                                <option value="Efectivo">Efectivo contra entrega</option>
+                                <option value="Nequi">Nequi</option>
+                                <option value="Daviplata">Daviplata</option>
+                                <option value="Tarjeta / Datáfono">Datáfono (Tarjeta)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">Notas adicionales (opcional)</label>
+                            <input type="text" id="customer-notes" placeholder="Ej: Sin picante en el guacamole, timbre dañado" class="w-full text-sm px-3 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+
+                        <button type="submit" id="checkout-btn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-base mt-2">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> Enviar Pedido por WhatsApp
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-400 py-12 border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2 text-white">
+                        <i class="fa-solid fa-utensils text-amber-500 text-xl"></i>
+                        <span class="font-heading font-bold text-xl">Empanadas de la Casa</span>
+                    </div>
+                    <p class="text-sm text-stone-400">
+                        Sabor 100% colombiano y artesanal. Preparadas diariamente con los ingredientes más frescos para darte una experiencia inolvidable.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 font-heading">Enlaces Rápidos</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#inicio" class="hover:text-amber-400 transition-colors">Inicio</a></li>
+                        <li><a href="#menu" class="hover:text-amber-400 transition-colors">Menú</a></li>
+                        <li><a href="#nosotros" class="hover:text-amber-400 transition-colors">Nuestra Historia</a></li>
+                        <li><a href="#contacto" class="hover:text-amber-400 transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 font-heading">Síguenos</h4>
+                    <div class="flex gap-4 text-xl">
+                        <a href="#" class="w-10 h-10 bg-stone-800 hover:bg-amber-600 text-white rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-stone-800 hover:bg-amber-600 text-white rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-stone-800 hover:bg-amber-600 text-white rounded-full flex items-center justify-center transition-colors">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold mb-3 font-heading">Métodos de Pago</h4>
+                    <p class="text-sm text-stone-400 mb-3">Aceptamos efectivo, transferencias digitales y tarjetas.</p>
+                    <div class="flex gap-2 text-xs font-semibold">
+                        <span class="bg-stone-800 text-amber-400 px-3 py-1.5 rounded-md border border-stone-700">Nequi</span>
+                        <span class="bg-stone-800 text-red-400 px-3 py-1.5 rounded-md border border-stone-700">Daviplata</span>
+                        <span class="bg-stone-800 text-emerald-400 px-3 py-1.5 rounded-md border border-stone-700">Efectivo</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-stone-800 pt-6 text-center text-xs text-stone-500">
+                <p>&copy; 2026 Empanadas de la Casa. Todos los derechos reservados. Diseñado para deleitar tu paladar.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // MENU DATA
+        const menuItems = [
+            {
+                id: 1,
+                title: "Empanada de Carne Desmechada",
+                category: "tradicional",
+                price: 4500,
+                description: "Carne de res desmechada guisada lentamente con sazón criolla, tomate, cebolla y papa suave.",
+                image: "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&q=80&w=600",
+                badge: "Más Vendida"
+            },
+            {
+                id: 2,
+                title: "Empanada de Pollo con Champiñones",
+                category: "tradicional",
+                price: 4500,
+                description: "Pechuga de pollo desmenuzada en crema especial con champiñones frescos y especias finas.",
+                image: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&q=80&w=600",
+                badge: "Favorita"
+            },
+            {
+                id: 3,
+                title: "Empanada Hawaiana Especial",
+                category: "especial",
+                price: 5000,
+                description: "Abundante queso doble crema fundido, jamón de primera y piña caramelizada artesanal.",
+                image: "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&q=80&w=600",
+                badge: "Especial"
+            },
+            {
+                id: 4,
+                title: "Empanada Ranchera",
+                category: "especial",
+                price: 5500,
+                description: "Salchicha ranchera seleccionada, maíz dulce, tocineta crujiente y queso fundido.",
+                image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&q=80&w=600",
+                badge: "Nueva"
+            },
+            {
+                id: 5,
+                title: "Queso y Bocadillo (Aborrajado)",
+                category: "dulce",
+                price: 4000,
+                description: "Mezcla perfecta de dulce de guayaba casero y abundante queso costeño o doble crema.",
+                image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=600",
+                badge: "Dulce"
+            },
+            {
+                id: 6,
+                title: "Empanada Vegetariana",
+                category: "tradicional",
+                price: 4200,
+                description: "Guiso de champiñones, maicitos, espinaca, pimentón asado y queso bajo en sal.",
+                image: "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&q=80&w=600",
+                badge: "Veggie"
+            },
+            {
+                id: 7,
+                title: "Ají Casero Especial (250ml)",
+                category: "bebidas",
+                price: 3000,
+                description: "Frasco con nuestro icónico ají picante criollo con cilantro, cebollín y limón.",
+                image: "https://images.unsplash.com/photo-1588165171080-c89acfa5ee83?auto=format&fit=crop&q=80&w=600",
+                badge: "Adicional"
+            },
+            {
+                id: 8,
+                title: "Limonada de Panela Helada",
+                category: "bebidas",
+                price: 3500,
+                description: "Refrescante bebida tradicional colombiana con jugo natural de limón recién exprimido.",
+                image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=600",
+                badge: "Refrescante"
+            },
+            {
+                id: 9,
+                title: "Gaseosa Personal 400ml",
+                category: "bebidas",
+                price: 3500,
+                description: "Variedad de sabores bien frías (Coca-Cola, Colombiana, Manzana Postobón).",
+                image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600",
+                badge: "Bebida"
+            }
+        ];
+
+        // STATE MANAGEMENT
+        let cart = [];
+
+        // RENDER MENU
+        function renderMenu(itemsToRender) {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+
+            itemsToRender.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-3xl overflow-hidden border border-amber-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group";
+                
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden bg-amber-50">
+                        <img src="${item.image}" 
+                             alt="${item.title}" 
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             onerror="this.src='https://placehold.co/600x400/D97706/FFFFFF?text=${encodeURIComponent(item.title)}'">
+                        <span class="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-md text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-stone-700">
+                            ${item.badge}
+                        </span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex justify-between items-start gap-2 mb-2">
+                                <h3 class="font-heading font-extrabold text-xl text-stone-900 leading-snug">${item.title}</h3>
+                            </div>
+                            <p class="text-stone-600 text-sm leading-relaxed">${item.description}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-amber-50">
+                            <div>
+                                <span class="text-xs text-stone-400 block font-semibold">PRECIO</span>
+                                <span class="font-heading font-extrabold text-xl text-amber-700">$${item.price.toLocaleString('es-CO')}</span>
+                            </div>
+                            <button onclick="addToCart(${item.id})" class="bg-amber-100 hover:bg-amber-600 text-amber-900 hover:text-white px-4 py-2.5 rounded-full font-bold text-sm transition-all duration-200 flex items-center gap-2 active:scale-95">
+                                <i class="fa-solid fa-plus text-xs"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // FILTER CATEGORY
+        function filterCategory(category) {
+            // Update button styles
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-amber-600', 'text-white');
+                btn.classList.add('bg-stone-100', 'text-stone-700');
+            });
+            event.target.classList.remove('bg-stone-100', 'text-stone-700');
+            event.target.classList.add('bg-amber-600', 'text-white');
+
+            if (category === 'todos') {
+                renderMenu(menuItems);
+            } else {
+                const filtered = menuItems.filter(item => item.category === category);
+                renderMenu(filtered);
+            }
+        }
+
+        // CART FUNCTIONS
+        function addToCart(itemId) {
+            const product = menuItems.find(item => item.id === itemId);
+            const existingIndex = cart.findIndex(cartItem => cartItem.id === itemId);
+
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1
+                });
+            }
+
+            updateCartUI();
+            showToast(`¡${product.title} agregada!`);
+        }
+
+        function updateQuantity(itemId, delta) {
+            const index = cart.findIndex(item => item.id === itemId);
+            if (index > -1) {
+                cart[index].quantity += delta;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            // Update counter badge
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-counter').innerText = totalCount;
+
+            // Render container items
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-stone-400">
+                        <i class="fa-solid fa-basket-shopping text-5xl mb-3 text-amber-200"></i>
+                        <p class="font-medium">Tu carrito está vacío.</p>
+                        <p class="text-xs mt-1 text-stone-400">¡Explora nuestro menú y añade tus empanadas favoritas!</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = "flex items-center justify-between p-3 bg-amber-50/60 rounded-2xl border border-amber-100";
+                    itemEl.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <img src="${item.image}" alt="${item.title}" class="w-14 h-14 object-cover rounded-xl" onerror="this.src='https://placehold.co/100x100/D97706/FFFFFF?text=Empanada'">
+                            <div>
+                                <h4 class="font-bold text-sm text-stone-900 leading-tight">${item.title}</h4>
+                                <span class="text-xs text-amber-700 font-semibold">$${(item.price * item.quantity).toLocaleString('es-CO')} COP</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 bg-white px-2 py-1 rounded-xl border border-stone-200 shadow-sm">
+                            <button onclick="updateQuantity(${item.id}, -1)" class="w-6 h-6 flex items-center justify-center text-stone-600 hover:text-red-600 font-bold">-</button>
+                            <span class="text-sm font-bold w-4 text-center text-stone-900">${item.quantity}</span>
+                            <button onclick="updateQuantity(${item.id}, 1)" class="w-6 h-6 flex items-center justify-center text-stone-600 hover:text-emerald-600 font-bold">+</button>
+                        </div>
+                    `;
+                    container.appendChild(itemEl);
+                });
+            }
+
+            // Calculations
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = cart.length > 0 ? 4000 : 0;
+            const total = subtotal + deliveryFee;
+
+            document.getElementById('cart-subtotal').innerText = `$${subtotal.toLocaleString('es-CO')} COP`;
+            document.getElementById('cart-total').innerText = `$${total.toLocaleString('es-CO')} COP`;
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const backdrop = document.getElementById('cart-backdrop');
+            const content = document.getElementById('cart-content');
+
+            if (drawer.classList.contains('pointer-events-none')) {
+                // Open
+                drawer.classList.remove('pointer-events-none');
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+                content.classList.remove('translate-x-full');
+            } else {
+                // Close
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                content.classList.add('translate-x-full');
+                setTimeout(() => {
+                    drawer.classList.add('pointer-events-none');
+                }, 300);
+            }
+        }
+
+        function toggleMobileNav() {
+            const nav = document.getElementById('mobile-nav');
+            nav.classList.toggle('hidden');
+        }
+
+        // TOAST NOTIFICATIONS
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "bg-stone-900 text-white text-sm font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0";
+            toast.innerHTML = `
+                <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // WHATSAPP ORDER GENERATOR
+        function sendWhatsAppOrder(e) {
+            e.preventDefault();
+
+            if (cart.length === 0) {
+                alert("Tu carrito está vacío. Agrega productos antes de realizar el pedido.");
+                return;
+            }
+
+            const name = document.getElementById('customer-name').value;
+            const address = document.getElementById('customer-address').value;
+            const payment = document.getElementById('payment-method').value;
+            const notes = document.getElementById('customer-notes').value;
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryFee = 4000;
+            const total = subtotal + deliveryFee;
+
+            let orderText = `*¡Hola! Quisiera realizar el siguiente pedido:* 🥟🌶️\n\n`;
+            orderText += `*Cliente:* ${name}\n`;
+            orderText += `*Dirección:* ${address}\n`;
+            orderText += `*Método de pago:* ${payment}\n`;
+            if (notes) orderText += `*Notas:* ${notes}\n`;
+            orderText += `\n*DETALLE DEL PEDIDO:*\n`;
+
+            cart.forEach(item => {
+                orderText += `• ${item.quantity}x ${item.title} - $${(item.price * item.quantity).toLocaleString('es-CO')}\n`;
+            });
+
+            orderText += `\n*Subtotal:* $${subtotal.toLocaleString('es-CO')} COP`;
+            orderText += `\n*Domicilio:* $${deliveryFee.toLocaleString('es-CO')} COP`;
+            orderText += `\n*TOTAL A PAGAR:* *$${total.toLocaleString('es-CO')} COP*`;
+            orderText += `\n\n¡Quedo atento a la confirmación! Muchas gracias.`;
+
+            const phone = "573001234567"; // Reemplazar por tu número real de WhatsApp
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(orderText)}`;
+
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function openWhatsAppDirect() {
+            window.open("https://wa.me/573001234567?text=¡Hola!%20Me%20gustaría%20obtener%20información%20sobre%20el%20menú%20de%20empanadas.", '_blank');
+        }
+
+        // INIT
+        window.onload = function() {
+            renderMenu(menuItems);
+            updateCartUI();
+        };
+    </script>
+</body>
+</html>
